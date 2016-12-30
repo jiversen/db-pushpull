@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# dbpush/dbpull: Use Dropbox to share files and folders across user accounts,
+# particularly useful for config files, etc.
+#	1) On first user account: dbpush somefile
+#	2) On second account: dbpull somefile
+
+# dbpull: make a link in curent dir to a file/folder in Dropbox/shared
+# Use to link to a common file that's already been dbpush'ed from another
+# location
+
+# called without argument: list files/directories available to be pulled
+if [ $# -eq 0 ]
+then
+    echo "Files & dirs// available for dbpull:"
+    echo `ls -FGA ~/Dropbox/shared`
+    exit
+fi
+
+FNAME=~/Dropbox/shared/$1
+
+if [ ! -e "$FNAME" ]
+then
+    echo "$0: $1 doesn't exist in dropbox. run dbpush first. Exiting"
+    exit 1
+fi
+
+if [ -e "$1" ]
+then
+    echo "$0: local copy of $1 alredy exists. Not overwriting. Delete it and run again."
+    exit 2
+fi
+
+echo "Pulling $1 into current dir from dropbox."
+ln -s "$FNAME"
+

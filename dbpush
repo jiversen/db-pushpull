@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# dbpush/dbpull: Use Dropbox to share files and folders across user accounts,
+# particularly useful for config files, etc.
+#       1) On first user account: dbpush somefile
+#       2) On second account: dbpull somefile
+
+# dbpush: put a file/folder into Dropbox/shared and replace w/ link to DB version
+
+SRC=$1
+DST=~/Dropbox/shared/$SRC
+
+if [ ! -e "$SRC" ]
+then
+    echo "$0: $SRC doesn't exist."
+    exit 1
+fi
+
+if [ -e "$DST" ]
+then
+    echo "$0: $SRC already present in dropbox. Quitting without changing anything. Delete it and call dbpush again."
+    exit 2
+fi
+
+echo "Pushing $SRC into dropbox."
+mv "$SRC" "$DST" || exit 1
+ln -s "$DST" || exit 2
